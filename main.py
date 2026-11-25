@@ -21,14 +21,20 @@ LINE = "I didn't miss the deadline — I spent it asking you 14 clarifying quest
 ENTRY_FILENAME = "entry.txt"
 
 
+def validate_line(line: str) -> None:
+    """Enforce the one-line contract: the entry is non-empty and
+    contains no newline, so the written file is exactly one line."""
+    if not line or chr(10) in line:
+        raise ValueError("the entry must be exactly one non-empty line")
+
+
 def write_entry(out_dir: Path) -> Path:
     """Write the excuse line to entry.txt inside out_dir and return its path.
 
     The file holds exactly the line and nothing else: no trailing newline,
     no extra whitespace, so the gate sees one line of under 200 chars.
     """
-    if not LINE or chr(10) in LINE:
-        raise ValueError("the entry must be exactly one non-empty line")
+    validate_line(LINE)
     out_dir.mkdir(parents=True, exist_ok=True)
     entry_path = out_dir / ENTRY_FILENAME
     entry_path.write_text(LINE, encoding="utf-8")
